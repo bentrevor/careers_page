@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 10
+  timeout: 5000
+  username: cpb_admin
+
+development:
+  <<: *default
+  database: cpb_dev
+
+test:
+  <<: *default
+  database: cpb_test
+
+production:
+  <<: *default
+  database: cpb_prod
