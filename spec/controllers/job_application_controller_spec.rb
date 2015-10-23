@@ -35,4 +35,33 @@ describe JobApplicationController do
       expect(response).to redirect_to home_path
     end
   end
+
+  describe '#create' do
+    context 'valid attrs' do
+      let(:attrs) {{ name: 'name', phone: '123-123-4567', email: 'asdf@jkl.com', position_id: open_position.id }}
+
+      it 'creates a JobApplication' do
+        expect {
+          post :create, attrs: attrs
+        }.to change{JobApplication.count}.by 1
+      end
+    end
+
+    context 'invalid attrs' do
+      let(:attrs) {{ name: '', phone: '', email: '', position_id: closed_position.id }}
+
+      it "doesn't create a JobApplication" do
+        expect {
+          post :create, attrs: attrs
+        }.to change{JobApplication.count}.by 0
+      end
+
+      # TODO
+      xit "shows a flash message and doesn't reload the page" do
+        # expect {
+        #   post :create, attrs: attrs
+        # }.to
+      end
+    end
+  end
 end
