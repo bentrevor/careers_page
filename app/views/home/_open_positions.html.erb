@@ -1,0 +1,7 @@
+<% @open_positions.each do |position| %>
+  <div class="job_opening green_border">
+    <p><%= position.name %></p>
+    <p><%= position.description %></p>
+    <a href="apply/<%= position.id %>">apply for this position</a>
+  </div>
+<% end %>

@@ -1,15 +1,13 @@
 class HomeController < ApplicationController
 
   def home
-    'asdf'
   end
 
   def about
-    'asdf'
   end
 
   def careers
-    'asdf'
+    @open_positions = Position.with_openings
   end
 
 end
