@@ -15,6 +15,8 @@
  */
 
 $light-gray: #ccc;
+$light-red: #f66;
+$light-green: #6f6;
 
 .red_border {
     border: 1px solid red;
@@ -24,6 +26,15 @@ $light-gray: #ccc;
 }
 .green_border {
     border: 1px solid green;
+}
+
+.flash-error {
+    background: $light-red;
+}
+
+.flash-success {
+    background: $light-green;
+
 }
 
 .logo {

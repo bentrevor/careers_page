@@ -15,7 +15,7 @@ class JobApplicationController < ApplicationController
 
     if position && position.has_openings?
       # TODO strong params
-      JobApplication.create(
+      job_application = JobApplication.create(
         name: attrs[:name],
         phone: attrs[:phone],
         email: attrs[:email],
@@ -25,7 +25,21 @@ class JobApplicationController < ApplicationController
       )
     end
 
-    # TODO redirect somewhere
-    render nothing: true
+    if job_application
+      if job_application.valid?
+        flash[:success] = "You have applied for the #{position.name} position."
+      else
+        flash[:error] = job_application.errors.full_messages.to_sentence
+        redirect_to job_applications_path(position.id) and return
+      end
+    else
+      if position
+        flash[:error] = "There are no openings for the #{position.name} position."
+      else
+        flash[:error] = "Something went wrong..."
+      end
+    end
+
+    redirect_to careers_path
   end
 end

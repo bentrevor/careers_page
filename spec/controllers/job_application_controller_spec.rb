@@ -42,8 +42,8 @@ describe JobApplicationController do
         name: 'name',
         phone: '123-123-4567',
         email: 'asdf@jkl.com',
-        resume: fixture_file_upload('ben-trevor_resume.pdf', 'application/pdf'),
-        cover_letter: fixture_file_upload('ben-trevor_cover-letter.pdf', 'application/pdf')
+        resume: fixture_file_upload('some_pdf.pdf', 'application/pdf'),
+        cover_letter: fixture_file_upload('some_pdf.pdf', 'application/pdf')
       }
     }
 
@@ -60,6 +60,18 @@ describe JobApplicationController do
         expect(job_app.email).to eq 'asdf@jkl.com'
         expect(job_app.position).to eq position_with_openings
       end
+
+      it 'redirects back to the job listings page' do
+        post :create, position_id: position_with_openings.id, job_application: attrs
+
+        expect(response).to redirect_to careers_path
+      end
+
+      it 'shows a "success" flash message' do
+        post :create, position_id: position_with_openings.id, job_application: attrs
+
+        expect(flash[:success]).to include position_with_openings.name
+      end
     end
 
     describe 'invalid attr' do
@@ -69,6 +81,13 @@ describe JobApplicationController do
             post :create, position_id: 'asdf', job_application: attrs
           }.to change{JobApplication.count}.by 0
         end
+
+        it 'redirects to the job openings page with a flash message' do
+          post :create, position_id: 'asdf', job_application: attrs
+
+          expect(response).to redirect_to careers_path
+          expect(flash[:error]).not_to be_nil
+        end
       end
 
       context 'position has no openings' do
@@ -76,6 +95,13 @@ describe JobApplicationController do
           expect {
             post :create, position_id: position_without_openings.id, job_application: attrs
           }.to change{JobApplication.count}.by 0
+        end
+
+        it 'redirects to the job openings page with a flash message' do
+          post :create, position_id: position_without_openings.id, job_application: attrs
+
+          expect(response).to redirect_to careers_path
+          expect(flash[:error]).to include position_without_openings.name
         end
       end
 
@@ -87,6 +113,14 @@ describe JobApplicationController do
             post :create, position_id: position_with_openings.id, job_application: bad_attrs
           }.to change{JobApplication.count}.by 0
         end
+
+        # in case the js validation doesn't catch it
+        it 'redirects back to the application form with a flash message' do
+          post :create, position_id: position_with_openings.id, job_application: bad_attrs
+
+          expect(response).to redirect_to job_applications_path(position_with_openings.id)
+          expect(flash[:error]).to include 'Name'
+        end
       end
 
       context 'cover letter or resume is missing' do
@@ -97,13 +131,6 @@ describe JobApplicationController do
             post :create, position_id: position_with_openings.id, job_application: bad_attrs
           }.to change{JobApplication.count}.by 0
         end
-      end
-
-      # TODO
-      xit "shows a flash message and doesn't reload the page" do
-        # expect {
-        #   post :create, attrs: attrs
-        # }.to
       end
     end
   end

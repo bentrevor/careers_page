@@ -7,7 +7,7 @@ FactoryGirl.define do
     phone '123-123-4567'
 
     # TODO figure out how to stub these...
-    resume File.new(Rails.root + 'spec/fixtures/ben-trevor_resume.pdf')
-    cover_letter File.new(Rails.root + 'spec/fixtures/ben-trevor_cover-letter.pdf')
+    resume File.new(Rails.root + 'spec/fixtures/some_pdf.pdf')
+    cover_letter File.new(Rails.root + 'spec/fixtures/some_pdf.pdf')
   end
 end
