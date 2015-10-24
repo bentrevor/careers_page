@@ -37,7 +37,15 @@ describe JobApplicationController do
   end
 
   describe '#create' do
-    let(:attrs) {{ name: 'name', phone: '123-123-4567', email: 'asdf@jkl.com' }}
+    let(:attrs) {
+      {
+        name: 'name',
+        phone: '123-123-4567',
+        email: 'asdf@jkl.com',
+        resume: fixture_file_upload('ben-trevor_resume.pdf', 'application/pdf'),
+        cover_letter: fixture_file_upload('ben-trevor_cover-letter.pdf', 'application/pdf')
+      }
+    }
 
     context 'all valid attrs' do
       it 'creates a JobApplication' do
@@ -73,6 +81,16 @@ describe JobApplicationController do
 
       context 'attr is blank' do
         let(:bad_attrs) { attrs.merge!(name: '') }
+
+        it "doesn't create a JobApplication" do
+          expect {
+            post :create, position_id: position_with_openings.id, job_application: bad_attrs
+          }.to change{JobApplication.count}.by 0
+        end
+      end
+
+      context 'cover letter or resume is missing' do
+        let(:bad_attrs) { attrs.except(:resume) }
 
         it "doesn't create a JobApplication" do
           expect {

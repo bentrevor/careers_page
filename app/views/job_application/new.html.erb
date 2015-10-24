@@ -19,7 +19,15 @@
     <%= f.telephone_field :phone, value: "stub" %>
   </div>
 
-  <!-- TODO attachment fields -->
+  <div>
+    <%= f.label "Resume" %>
+    <%= f.file_field :resume %>
+  </div>
+
+  <div>
+    <%= f.label "Cover Letter" %>
+    <%= f.file_field :cover_letter %>
+  </div>
 
   <%= f.submit "Apply" %>
 <% end %>

@@ -6,6 +6,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'bootstrap-sass'
 gem 'sass-rails'
 gem 'thin'
+gem 'paperclip'
 
 group :development, :test do
   gem 'pry-rails'

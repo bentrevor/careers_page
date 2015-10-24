@@ -14,10 +14,13 @@ class JobApplicationController < ApplicationController
     position = Position.find_by_id(attrs[:position_id])
 
     if position && position.has_openings?
+      # TODO strong params
       JobApplication.create(
         name: attrs[:name],
         phone: attrs[:phone],
         email: attrs[:email],
+        resume: attrs[:resume],
+        cover_letter: attrs[:cover_letter],
         position: position,
       )
     end

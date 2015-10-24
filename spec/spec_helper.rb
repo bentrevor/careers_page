@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] ||= 'test'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'paperclip/matchers'
 require 'pry'
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
@@ -16,6 +17,9 @@ RSpec.configure do |config|
 
   # so controller specs have methods like `get`, `post`, etc.
   config.infer_spec_type_from_file_location!
+
+  config.include Paperclip::Shoulda::Matchers
+  config.fixture_path = "#{Rails.root}/spec/fixtures"
 
   config.use_transactional_fixtures = true
 end
