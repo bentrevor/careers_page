@@ -1,8 +1,9 @@
 class Position < ActiveRecord::Base
   has_many :job_applications
 
-  # `open` shadows some private method...
   scope :with_openings, -> { where('openings > 0') }
+
+  validates :openings, numericality: { greater_than_or_equal_to: 0 }
 
   def has_openings?
     openings > 0

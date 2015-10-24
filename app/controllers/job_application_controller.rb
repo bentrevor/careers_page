@@ -10,8 +10,7 @@ class JobApplicationController < ApplicationController
   end
 
   def create
-    # TODO redirect somewhere
-    attrs = params[:attrs]
+    attrs = params[:job_application].merge!(params.slice(:position_id))
     position = Position.find_by_id(attrs[:position_id])
 
     if position && position.has_openings?
@@ -23,6 +22,7 @@ class JobApplicationController < ApplicationController
       )
     end
 
+    # TODO redirect somewhere
     render nothing: true
   end
 end

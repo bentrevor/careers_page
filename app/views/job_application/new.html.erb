@@ -2,19 +2,21 @@
 <p><%= @position.description %></p>
 
 <%= form_for(@job_application, url: apply_path) do |f| %>
+  <%= hidden_field_tag :position_id, @position.id %>
+
   <div>
     <%= f.label "Full Name" %>
-    <%= f.text_field :name %>
+    <%= f.text_field :name, value: "stub" %>
   </div>
 
   <div>
     <%= f.label "Email" %>
-    <%= f.email_field :email %>
+    <%= f.email_field :email, value: "stub@stub.com" %>
   </div>
 
   <div>
     <%= f.label "Phone" %>
-    <%= f.telephone_field :phone %>
+    <%= f.telephone_field :phone, value: "stub" %>
   </div>
 
   <!-- TODO attachment fields -->

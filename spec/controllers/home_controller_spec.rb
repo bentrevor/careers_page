@@ -25,15 +25,12 @@ describe HomeController do
     end
 
     it 'has a list of positions with openings' do
-      position_without_opening = Position.create(name: 'position without opening', openings: 0)
-      position_with_opening = Position.create(name: 'position with opening', openings: 1)
+      position_without_openings = FactoryGirl.create(:position_without_openings)
+      position_with_openings = FactoryGirl.create(:position_with_openings)
 
       get :careers
 
-      expect(assigns(:open_positions).length).to be 1
-
-      expect(assigns(:open_positions)).to include position_with_opening
-      expect(assigns(:open_positions)).not_to include position_without_opening
+      expect(assigns(:open_positions)).to eq [position_with_openings]
     end
   end
 end

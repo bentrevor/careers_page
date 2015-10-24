@@ -1,20 +1,27 @@
 require 'spec_helper'
 
 describe Position do
-  it 'is open when there is at least one job_opening' do
-    position_with_opening = Position.create(name: 'position with opening', openings: 1)
-    position_without_opening = Position.create(name: 'position without opening', openings: 0)
+  let(:position_with_openings)    { FactoryGirl.create(:position_with_openings) }
+  let(:position_without_openings) { FactoryGirl.create(:position_without_openings) }
 
-    expect(Position.with_openings).to include position_with_opening
-    expect(Position.with_openings).not_to include position_without_opening
+  it 'knows if it has any openings' do
+    expect(position_with_openings.has_openings?).to eq true
+    expect(position_without_openings.has_openings?).to eq false
+  end
 
-    expect(position_with_opening).to have_openings
-    expect(position_without_opening).not_to have_openings
+  it 'has a scope for positions with openings' do
+    expect(Position.with_openings).to include position_with_openings
+    expect(Position.with_openings).not_to include position_without_openings
   end
 
   it 'has_many job_applications' do
-    position_with_opening = Position.create(name: 'position with opening', openings: 1)
+    job_app = FactoryGirl.create(:job_application)
+    position_with_openings.job_applications << job_app
 
-    expect(position_with_opening.job_applications).to be_empty
+    expect(position_with_openings.job_applications).to eq [job_app]
+  end
+
+  it 'validates a positive number of openings' do
+    expect { FactoryGirl.create(:position, openings: -1) }.to raise_error(ActiveRecord::RecordInvalid)
   end
 end
