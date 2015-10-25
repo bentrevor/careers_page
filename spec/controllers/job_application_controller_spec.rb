@@ -5,53 +5,59 @@ describe JobApplicationController do
   let(:position_without_openings) { FactoryGirl.create(:position_without_openings) }
 
   describe '#new' do
-    it 'status == 200' do
-      get :new, position_id: position_with_openings.id
+    context 'position with openings' do
+      before do
+        get :new, position_id: position_with_openings.id
+      end
 
-      expect(response.status).to eq 200
+      it 'status == 200' do
+        expect(response.status).to eq 200
+      end
+
+      it 'builds a JobApplication for a specific Position' do
+        expect(assigns(:position)).to eq position_with_openings
+        expect(assigns(:job_application)).to be_a JobApplication
+      end
     end
 
-    it 'refers to a specific Position' do
-      get :new, position_id: position_with_openings.id
-
-      expect(assigns(:position)).to eq position_with_openings
-    end
-
-    it 'makes a new JobApplication' do
-      get :new, position_id: position_with_openings.id
-
-      expect(assigns(:job_application)).to be_a JobApplication
-    end
-
-    it "redirects home for a position_id that doesn't exist" do
+    it "redirects to the careers page for a position_id that doesn't exist" do
       get :new, position_id: -1
 
-      expect(response).to redirect_to home_path
+      expect(response).to redirect_to careers_path
+      expect(flash[:error]).to eq I18n.t('flash.invalid_position_id')
     end
 
-    it "redirects home for a Position that doesn't have openings" do
+    it "redirects back to the careers page for a Position that doesn't have openings" do
       get :new, position_id: position_without_openings
 
-      expect(response).to redirect_to home_path
+      expect(response).to redirect_to careers_path
+      expect(flash[:error]).to eq I18n.t('flash.invalid_position_id')
     end
   end
 
   describe '#create' do
-    let(:attrs) {
+    let(:valid_attrs) {
       {
         name: 'name',
         phone: '123-123-4567',
         email: 'asdf@jkl.com',
         resume: fixture_file_upload('some_pdf.pdf', 'application/pdf'),
-        cover_letter: fixture_file_upload('some_pdf.pdf', 'application/pdf')
+        cover_letter: fixture_file_upload('some_pdf.pdf', 'application/pdf'),
+        position_id: position_id
       }
     }
+    let(:valid_position_id) { position_with_openings.id }
 
-    context 'all valid attrs' do
+    before do
+      post :create, position_id: position_id, job_application: attrs
+    end
+
+    context 'with all valid attrs' do
+      let(:attrs) { valid_attrs }
+      let(:position_id) { valid_position_id }
+
       it 'creates a JobApplication' do
-        expect {
-          post :create, position_id: position_with_openings.id, job_application: attrs
-        }.to change{JobApplication.count}.by 1
+        expect(JobApplication.count).to eq 1
 
         job_app = JobApplication.last
 
@@ -62,75 +68,83 @@ describe JobApplicationController do
       end
 
       it 'redirects back to the job listings page' do
-        post :create, position_id: position_with_openings.id, job_application: attrs
-
         expect(response).to redirect_to careers_path
       end
 
       it 'shows a "success" flash message' do
-        post :create, position_id: position_with_openings.id, job_application: attrs
-
-        expect(flash[:success]).to include position_with_openings.name
+        expect(flash[:success]).to eq I18n.t('flash.job_application_successfully_created', name: position_with_openings.name)
       end
     end
 
-    describe 'invalid attr' do
-      context "position doesn't exist" do
-        it "doesn't create a JobApplication" do
-          expect {
-            post :create, position_id: 'asdf', job_application: attrs
-          }.to change{JobApplication.count}.by 0
-        end
+    context "when position doesn't exist" do
+      let(:attrs) { valid_attrs }
+      let(:position_id) { -1 }
 
-        it 'redirects to the job openings page with a flash message' do
-          post :create, position_id: 'asdf', job_application: attrs
-
-          expect(response).to redirect_to careers_path
-          expect(flash[:error]).not_to be_nil
-        end
+      it "doesn't create a JobApplication" do
+        expect(JobApplication.count).to eq 0
       end
 
-      context 'position has no openings' do
-        it "doesn't create a JobApplication" do
-          expect {
-            post :create, position_id: position_without_openings.id, job_application: attrs
-          }.to change{JobApplication.count}.by 0
-        end
+      it 'redirects to the job openings page with a flash message' do
+        expect(response).to redirect_to careers_path
+        expect(flash[:error]).to eq I18n.t('flash.invalid_position_id')
+      end
+    end
 
-        it 'redirects to the job openings page with a flash message' do
-          post :create, position_id: position_without_openings.id, job_application: attrs
+    context 'when position has no openings' do
+      let(:attrs) { valid_attrs }
+      let(:position_id) { position_without_openings.id }
 
-          expect(response).to redirect_to careers_path
-          expect(flash[:error]).to include position_without_openings.name
-        end
+      it "doesn't create a JobApplication" do
+        expect(JobApplication.count).to eq 0
       end
 
-      context 'attr is blank' do
-        let(:bad_attrs) { attrs.merge!(name: '') }
+      it 'redirects to the job openings page with a flash message' do
+        expect(response).to redirect_to careers_path
+        expect(flash[:error]).to eq I18n.t('flash.invalid_position_id')
+      end
+    end
 
-        it "doesn't create a JobApplication" do
-          expect {
-            post :create, position_id: position_with_openings.id, job_application: bad_attrs
-          }.to change{JobApplication.count}.by 0
-        end
+    context 'when attr is blank' do
+      let(:attrs) { valid_attrs.merge!(name: '') }
+      let(:position_id) { valid_position_id }
 
-        # in case the js validation doesn't catch it
-        it 'redirects back to the application form with a flash message' do
-          post :create, position_id: position_with_openings.id, job_application: bad_attrs
-
-          expect(response).to redirect_to job_applications_path(position_with_openings.id)
-          expect(flash[:error]).to include 'Name'
-        end
+      it "doesn't create a JobApplication" do
+        expect(JobApplication.count).to eq 0
       end
 
-      context 'cover letter or resume is missing' do
-        let(:bad_attrs) { attrs.except(:resume) }
+      it 'redirects back to the application form with a flash message' do
+        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(flash[:error]).to include I18n.t('flash.invalid_attr')
+        expect(flash[:error]).to include "Name can't be blank"
+      end
+    end
 
-        it "doesn't create a JobApplication" do
-          expect {
-            post :create, position_id: position_with_openings.id, job_application: bad_attrs
-          }.to change{JobApplication.count}.by 0
-        end
+    context 'when cover letter or resume is missing' do
+      let(:attrs) { valid_attrs.except(:resume) }
+      let(:position_id) { valid_position_id }
+
+      it "doesn't create a JobApplication" do
+        expect(JobApplication.count).to eq 0
+      end
+
+      it 'redirects back to the application form with a flash message' do
+        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(flash[:error]).to include I18n.t('flash.invalid_attr')
+        expect(flash[:error]).to include "Resume can't be blank"
+      end
+    end
+
+    context 'when cover letter or resume is not a pdf' do
+      let(:attrs) { valid_attrs.merge!(resume: fixture_file_upload('some_image.jpg', 'application/pdf')) }
+      let(:position_id) { valid_position_id }
+
+      it "doesn't create a JobApplication" do
+        expect(JobApplication.count).to eq 0
+      end
+
+      it 'redirects back to the application form with a flash message' do
+        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(flash[:error]).to include 'Resume has contents that are not what they are reported to be'
       end
     end
   end

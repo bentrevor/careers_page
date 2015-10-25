@@ -20,4 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  flash:
+    # generic_error: 'Sorry, something went wrong.'
+    # generic_success: 'Great job!'
+    job_application_successfully_created: 'You have applied for the %{name} position!'
+    invalid_attr: "The following errors were made: " # could interpolate, but this makes tests a little more flexible
+    invalid_position_id: 'Sorry, these are the only positions we have openings for.'
