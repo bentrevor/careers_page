@@ -8,7 +8,14 @@ describe JobApplication do
     expect(job_application.position).to eq position
   end
 
-  [:name, :phone, :email].each do |attr|
+  it 'validates that the Position has openings on creation' do
+    position = FactoryGirl.create(:position_without_openings)
+    invalid_job_application = FactoryGirl.build(:job_application, position: position)
+
+    expect(invalid_job_application.save).to be false
+  end
+
+  [:name, :phone, :email, :position_id].each do |attr|
     it "doesn't allow a blank #{attr}" do
       job_application.update_attribute(attr, '')
 
