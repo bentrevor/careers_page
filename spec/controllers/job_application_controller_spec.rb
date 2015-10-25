@@ -49,7 +49,7 @@ describe JobApplicationController do
     let(:valid_position_id) { position_with_openings.id }
 
     before do
-      post :create, position_id: position_id, job_application: attrs
+      post :create, job_application: attrs
     end
 
     context 'with all valid attrs' do
@@ -135,7 +135,7 @@ describe JobApplicationController do
     end
 
     context 'when cover letter or resume is not a pdf' do
-      let(:attrs) { valid_attrs.merge!(resume: fixture_file_upload('some_image.jpg', 'application/pdf')) }
+      let(:attrs) { valid_attrs.merge!(resume: fixture_file_upload('some_image.jpg', 'image/jpg')) }
       let(:position_id) { valid_position_id }
 
       it "doesn't create a JobApplication" do
@@ -144,6 +144,18 @@ describe JobApplicationController do
 
       it 'redirects back to the application form with a flash message' do
         expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(flash[:error]).to include I18n.t('flash.invalid_attr')
+        expect(flash[:error]).to include 'Resume content type is invalid'
+      end
+    end
+
+    context 'when user spoofs filetype' do
+      let(:attrs) { valid_attrs.merge!(resume: fixture_file_upload('some_image.jpg', 'application/pdf')) }
+      let(:position_id) { valid_position_id }
+
+      it "doesn't trust the content_type" do
+        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(flash[:error]).to include I18n.t('flash.invalid_attr')
         expect(flash[:error]).to include 'Resume has contents that are not what they are reported to be'
       end
     end

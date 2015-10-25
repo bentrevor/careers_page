@@ -2,37 +2,32 @@ class JobApplicationController < ApplicationController
   def new
     @position = Position.find_by_id(params[:position_id])
 
-    if @position.try(:has_openings?)
-      @job_application = JobApplication.new
-    else
+    if invalid_position?(@position)
       render_invalid_position
+    else
+      @job_application = JobApplication.new
     end
   end
 
   def create
-    attrs = params[:job_application].merge!(params.slice(:position_id))
-    position = Position.find_by_id(attrs[:position_id])
+    job_application = JobApplication.new(permitted_params)
 
-    job_application = JobApplication.create(permitted_params)
-
-    if job_application.valid?
-      flash[:success] = I18n.t('flash.job_application_successfully_created', name: position.name)
+    if job_application.save
+      render_valid_job_application(job_application)
     else
-      if invalid_position?(position)
-        render_invalid_position and return
-      end
-
-      flash[:error] = I18n.t('flash.invalid_attr') + job_application.errors.full_messages.to_sentence
-      redirect_to job_applications_path(position.id) and return
+      render_invalid_job_application(job_application)
     end
-
-    redirect_to careers_path
   end
 
   private
 
-  def invalid_position?(position)
-    position.nil? || !position.has_openings?
+  def permitted_params
+    params.require(:job_application).permit(:name, :phone, :email, :resume, :cover_letter, :position_id)
+  end
+
+  def render_valid_job_application(job_application)
+    flash[:success] = I18n.t('flash.job_application_successfully_created', name: job_application.position.name)
+    redirect_to careers_path
   end
 
   def render_invalid_position
@@ -40,7 +35,22 @@ class JobApplicationController < ApplicationController
     redirect_to careers_path
   end
 
-  def permitted_params
-    params.require(:job_application).permit(:name, :phone, :email, :resume, :cover_letter, :position_id)
+  def render_invalid_job_application(job_application)
+    position = Position.find_by_id(permitted_params[:position_id])
+
+    if invalid_position?(position)
+      render_invalid_position
+    else
+      render_invalid_job_application_attr(job_application)
+    end
+  end
+
+  def render_invalid_job_application_attr(job_application)
+    flash[:error] = I18n.t('flash.invalid_attr') + job_application.errors.full_messages.to_sentence
+    redirect_to job_applications_path(job_application.position.id)
+  end
+
+  def invalid_position?(position)
+    !position.try(:has_openings?)
   end
 end
