@@ -1,0 +1,18 @@
+<%= form_for(@position, url: new_position_path) do |f| %>
+  <div>
+    <%= f.label "Name" %>
+    <%= f.text_field :name, value: "stub" %>
+  </div>
+
+  <div>
+    <%= f.label "Description" %>
+    <%= f.text_field :description, value: "stub desc" %>
+  </div>
+
+  <div>
+    <%= f.label "Openings" %>
+    <%= f.number_field :openings, value: 0 %>
+  </div>
+
+  <%= f.submit "Apply" %>
+<% end %>

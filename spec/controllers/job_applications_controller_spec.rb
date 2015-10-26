@@ -67,12 +67,9 @@ describe JobApplicationsController do
         expect(job_app.position).to eq position_with_openings
       end
 
-      it 'redirects back to the job listings page' do
-        expect(response).to redirect_to careers_path
-      end
-
-      it 'shows a "success" flash message' do
+      it 'redirects back to the job listings page with a flash message' do
         expect(flash[:success]).to eq I18n.t('flash.job_application_successfully_created', name: position_with_openings.name)
+        expect(response).to redirect_to careers_path
       end
     end
 

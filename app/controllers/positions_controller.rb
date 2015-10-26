@@ -3,6 +3,16 @@ class PositionsController < ApplicationController
     @position = Position.new
   end
 
+  def create
+    position = Position.new(permitted_params)
+
+    if position.save
+      render_valid_position_creation(position)
+    else
+      render_invalid_position_creation(position)
+    end
+  end
+
   def edit
     if !@position = Position.find_by_id(params[:id])
       render_invalid_position
@@ -46,9 +56,19 @@ class PositionsController < ApplicationController
     redirect_to position_path(position)
   end
 
+  def render_valid_position_creation(position)
+    flash[:success] = I18n.t('flash.position_successfully_created')
+    redirect_to position_path(position)
+  end
+
   def render_invalid_position_update(position)
     flash[:error] = I18n.t('flash.invalid_attr') + position.errors.full_messages.to_sentence
     redirect_to edit_position_path(position)
+  end
+
+  def render_invalid_position_creation(position)
+    flash[:error] = I18n.t('flash.invalid_attr') + position.errors.full_messages.to_sentence
+    redirect_to new_position_path
   end
 
   def render_invalid_position
