@@ -24,4 +24,8 @@ describe Position do
   it 'validates a positive number of openings' do
     expect { FactoryGirl.create(:position, openings: -1) }.to raise_error(ActiveRecord::RecordInvalid)
   end
+
+  it 'validates presence of name' do
+    expect { FactoryGirl.create(:position, name: '') }.to raise_error(ActiveRecord::RecordInvalid)
+  end
 end

@@ -24,9 +24,7 @@ class JobApplicationsController < ApplicationController
   end
 
   def show
-    @job_application = JobApplication.find_by_id(params[:id])
-
-    if !@job_application
+    if !@job_application = JobApplication.find_by_id(params[:id])
       flash[:error] = I18n.t('flash.invalid_job_application_id')
       redirect_to job_applications_path
     end

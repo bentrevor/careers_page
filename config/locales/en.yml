@@ -25,3 +25,5 @@ en:
     invalid_job_application_id: 'There is no job application with that id.'
     invalid_position_id: 'Sorry, these are the only positions we have openings for.'
     job_application_successfully_created: 'You have applied for the %{name} position!'
+    position_does_not_exist: 'There is no position with that id.'
+    position_successfully_updated: 'The position has been updated.'
