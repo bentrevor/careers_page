@@ -2,7 +2,7 @@
 <p><%= @position.description %></p>
 
 <%= form_for(@job_application, url: apply_path) do |f| %>
-  <%= hidden_field_tag :position_id, @position.id %>
+  <%= hidden_field_tag "job_application[position_id]", @position.id %>
 
   <div>
     <%= f.label "Full Name" %>

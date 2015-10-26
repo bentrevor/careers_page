@@ -1,0 +1,34 @@
+<div class="red_border">
+  <div>
+    <span>Position:</span>
+    <%= link_to job_application.position.name, apply_path(job_application.position.id) %>
+  </div>
+
+  <div>
+    <span>Full name:</span>
+    <%= job_application.name %>
+  </div>
+
+  <div>
+    <span>Email:</span>
+    <%= job_application.email %>
+  </div>
+
+  <div>
+    <span>Phone:</span>
+    <%= job_application.phone %>
+  </div>
+
+  <div>
+    <span>Applied:</span>
+    <%= time_ago_in_words(job_application.created_at) + " ago" %>
+  </div>
+
+  <div>
+    <%= link_to "View Resume", job_application.resume.url(:original, false) %>
+  </div>
+
+  <div>
+    <%= link_to "View Cover Letter", job_application.cover_letter.url(:original, false) %>
+  </div>
+</div>

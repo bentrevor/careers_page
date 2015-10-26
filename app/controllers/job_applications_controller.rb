@@ -1,4 +1,4 @@
-class JobApplicationController < ApplicationController
+class JobApplicationsController < ApplicationController
   def new
     @position = Position.find_by_id(params[:position_id])
 
@@ -16,6 +16,19 @@ class JobApplicationController < ApplicationController
       render_valid_job_application(job_application)
     else
       render_invalid_job_application(job_application)
+    end
+  end
+
+  def index
+    @job_applications = JobApplication.all
+  end
+
+  def show
+    @job_application = JobApplication.find_by_id(params[:id])
+
+    if !@job_application
+      flash[:error] = I18n.t('flash.invalid_job_application_id')
+      redirect_to job_applications_path
     end
   end
 

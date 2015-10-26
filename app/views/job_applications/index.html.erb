@@ -1,0 +1,5 @@
+<div>
+  <% @job_applications.each do |job_app| %>
+    <%= render partial: "job_applications/show_application", locals: { job_application: job_app } %>
+  <% end %>
+</div>

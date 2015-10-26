@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JobApplicationController do
+describe JobApplicationsController do
   let(:position_with_openings)    { FactoryGirl.create(:position_with_openings) }
   let(:position_without_openings) { FactoryGirl.create(:position_without_openings) }
 
@@ -157,6 +157,49 @@ describe JobApplicationController do
         expect(response).to redirect_to job_applications_path(position_with_openings.id)
         expect(flash[:error]).to include I18n.t('flash.invalid_attr')
         expect(flash[:error]).to include 'Resume has contents that are not what they are reported to be'
+      end
+    end
+  end
+
+  # admin
+  describe '#index' do
+    before do
+      get :index
+    end
+
+    it 'status == 200' do
+      expect(response.status).to eq 200
+    end
+
+    it 'shows a list of all job applications' do
+      3.times { |n| FactoryGirl.create(:job_application, name: n.to_s) }
+
+      expect(assigns(:job_applications)).to eq JobApplication.all
+    end
+  end
+
+  describe '#show' do
+    let(:job_application) { FactoryGirl.create(:job_application) }
+    let(:job_application_id) { job_application.id }
+
+    before do
+      get :show, id: job_application_id
+    end
+
+    it 'status == 200' do
+      expect(response.status).to eq 200
+    end
+
+    it 'shows a single job application' do
+      expect(assigns(:job_application)).to eq job_application
+    end
+
+    context 'invalid job application id' do
+      let(:job_application_id) { -1 }
+
+      it 'redirects home with a flash message for an invalid job application id' do
+        expect(flash[:error]).to eq I18n.t('flash.invalid_job_application_id')
+        expect(response).to redirect_to job_applications_path
       end
     end
   end
