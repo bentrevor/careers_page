@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get '/about',   to: 'home#about'
   get '/careers', to: 'home#careers'
 
+  resources :positions, only: [:index, :show]
   resources :job_applications, only: [:index, :show]
 
   get '/apply/:position_id', to: 'job_applications#new', as: 'apply'

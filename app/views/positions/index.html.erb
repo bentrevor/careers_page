@@ -1,0 +1,5 @@
+<div>
+  <% @positions.each do |position| %>
+    <%= render partial: "positions/show_position", locals: { position: position } %>
+  <% end %>
+</div>
