@@ -37,6 +37,10 @@ class PositionsController < ApplicationController
     end
   end
 
+  def careers
+    @open_positions = Position.with_openings
+  end
+
   private
 
   def permitted_params

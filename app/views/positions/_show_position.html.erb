@@ -1,21 +1,19 @@
-<div class="blue_border">
-  <div>
-    <%= position.name %>
-  </div>
+<div class="div_list_item">
+  <h3><%= position.name %></h3>
+  <p><%= position.description %></p>
 
   <div>
-    <%= position.description %>
-  </div>
-
-  <div>
-    <span>Openings:</span>
-    <%= position.openings %>
+    <span>Openings:</span> <%= position.openings %>
   </div>
 
   <div>
     <span>Applications:</span>
-    <% position.job_applications.each do |job_app| %>
-      <%= link_to job_app.name, job_applications_path(job_app) %>
+    <% if position.job_applications.none? %>
+      <span>None</span>
+    <% else %>
+      <% position.job_applications.each do |job_app| %>
+        <%= link_to job_app.name, job_applications_path(job_app) %>
+      <% end %>
     <% end %>
   </div>
 </div>

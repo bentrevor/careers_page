@@ -18,14 +18,8 @@ $light-gray: #ccc;
 $light-red: #f66;
 $light-green: #6f6;
 
-.red_border {
-    border: 1px solid red;
-}
-.blue_border {
-    border: 1px solid blue;
-}
-.green_border {
-    border: 1px solid green;
+.content_container {
+    padding: 20px;
 }
 
 .flash-error {
@@ -34,6 +28,13 @@ $light-green: #6f6;
 
 .flash-success {
     background: $light-green;
+}
+
+.div_list_item {
+    background: $light-gray;
+    border: 1px solid black;
+    margin: 10px;
+    padding: 0 10px 15px;
 }
 
 .logo {

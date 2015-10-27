@@ -110,7 +110,7 @@ describe JobApplicationsController do
       end
 
       it 'redirects back to the application form with a flash message' do
-        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(response).to redirect_to new_job_application_path(position_with_openings.id)
         expect(flash[:error]).to include I18n.t('flash.invalid_attr')
         expect(flash[:error]).to include "Name can't be blank"
       end
@@ -125,7 +125,7 @@ describe JobApplicationsController do
       end
 
       it 'redirects back to the application form with a flash message' do
-        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(response).to redirect_to new_job_application_path(position_with_openings.id)
         expect(flash[:error]).to include I18n.t('flash.invalid_attr')
         expect(flash[:error]).to include "Resume can't be blank"
       end
@@ -140,7 +140,7 @@ describe JobApplicationsController do
       end
 
       it 'redirects back to the application form with a flash message' do
-        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(response).to redirect_to new_job_application_path(position_with_openings.id)
         expect(flash[:error]).to include I18n.t('flash.invalid_attr')
         expect(flash[:error]).to include 'Resume content type is invalid'
       end
@@ -151,7 +151,7 @@ describe JobApplicationsController do
       let(:position_id) { valid_position_id }
 
       it "doesn't trust the content_type" do
-        expect(response).to redirect_to job_applications_path(position_with_openings.id)
+        expect(response).to redirect_to new_job_application_path(position_with_openings.id)
         expect(flash[:error]).to include I18n.t('flash.invalid_attr')
         expect(flash[:error]).to include 'Resume has contents that are not what they are reported to be'
       end

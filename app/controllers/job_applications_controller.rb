@@ -58,7 +58,7 @@ class JobApplicationsController < ApplicationController
 
   def render_invalid_job_application_attr(job_application)
     flash[:error] = I18n.t('flash.invalid_attr') + job_application.errors.full_messages.to_sentence
-    redirect_to job_applications_path(job_application.position.id)
+    redirect_to new_job_application_path(job_application.position.id)
   end
 
   def invalid_position?(position)

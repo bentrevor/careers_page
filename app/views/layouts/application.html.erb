@@ -12,11 +12,13 @@
   <body>
     <%= render partial: "shared/header" %>
 
-    <% flash.each do |type, msg| %>
-      <div class="flash-<%= type %>"><%= msg %></div>
-    <% end %>
-
-    <%= yield %>
+    <div class="content_container">
+      <% flash.each do |type, msg| %>
+        <div class="flash-<%= type %>"><%= msg %></div>
+      <% end %>
+  
+      <%= yield %>
+    </div>
 
     <%= render partial: "shared/footer" %>
 

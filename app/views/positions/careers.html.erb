@@ -1,4 +1,4 @@
-<h3>About CareersPage.biz</h3>
+<h2>Working at CareersPage.biz</h2>
 
 <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
 totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae
@@ -9,3 +9,13 @@ modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut 
 veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea
 commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil
 molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+
+<h2>Job Openings</h2>
+
+<% @open_positions.each do |position| %>
+  <div class="div_list_item">
+    <h3><%= position.name %></h3>
+    <p><%= position.description %></p>
+    <a href="apply/<%= position.id %>">apply for this position</a>
+  </div>
+<% end %>
