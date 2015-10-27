@@ -15,12 +15,18 @@ describe JobApplication do
     expect(invalid_job_application.save).to be false
   end
 
-  [:name, :phone, :email, :position_id].each do |attr|
+  [:name, :phone, :email].each do |attr|
     it "doesn't allow a blank #{attr}" do
       job_application.update_attribute(attr, '')
 
       expect { job_application.save! }.to raise_error(ActiveRecord::RecordInvalid)
     end
+  end
+
+  it 'validates presence of position_id' do
+    job_application.position_id = nil
+
+    expect { job_application.save! }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
   context 'attachments' do

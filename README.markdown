@@ -1,28 +1,25 @@
-== README
+#### Local setup
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+I spent a while trying to put together a vagrant project, and my fruitless efforts are on the
+`vagrant` branch.  So here's how to set it up on OSX (assuming Homebrew and Homebrew-Cask are
+installed, and you are in the project root):
 
-Things you may want to cover:
+    bundle install
 
-* Ruby version
+If `bundle` fails to install `pg` (and `gem install pg` also doesn't work), it means Postgres needs
+to be installed and the Postgres server needs to be started:
 
-* System dependencies
+    brew update && brew install postgresql
+    pg_ctl -D /usr/local/var/postgres start
 
-* Configuration
+Then create the database user and for the app:
 
-* Database creation
+    sudo createuser -P -s -e cpb_admin
 
-* Database initialization
+Then run this rake task to set up and seed the databases:
 
-* How to run the test suite
+    bundle exec rake app:setup
 
-* Services (job queues, cache servers, search engines, etc.)
+Now you should be able to run the tests with `bundle exec rspec`, and start the rails server with
+`bundle exec rails s`.  To populate the db with dummy data, run `bundle exec rake db:seed`.
 
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
