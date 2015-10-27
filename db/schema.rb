@@ -17,10 +17,10 @@ ActiveRecord::Schema.define(version: 20151024181010) do
   enable_extension "plpgsql"
 
   create_table "job_applications", force: :cascade do |t|
-    t.integer  "position_id"
-    t.string   "name"
-    t.string   "email"
-    t.string   "phone"
+    t.integer  "position_id",               null: false
+    t.string   "name",                      null: false
+    t.string   "email",                     null: false
+    t.string   "phone",                     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "resume_file_name"

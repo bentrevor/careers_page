@@ -1,6 +1,7 @@
 default: &default
   adapter: postgresql
-  encoding: unicode
+  encoding: latin1
+  host: localhost
   pool: 10
   timeout: 5000
   username: cpb_admin

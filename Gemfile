@@ -7,6 +7,7 @@ gem 'bootstrap-sass'
 gem 'sass-rails'
 gem 'thin'
 gem 'paperclip'
+gem 'therubyracer'
 
 group :development, :test do
   gem 'pry-rails'
